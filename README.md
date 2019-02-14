@@ -10,7 +10,7 @@
 $ npm install rak-trzustki/font-thief -g
 ```
 
-### Usage
+#### Usage
 
 ```bash
 $ loot -s {url} [optional -c {format}]

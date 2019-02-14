@@ -1,10 +1,11 @@
 #!/usr/bin/env node
 
+const utilities = require('./utilities');
+
 import fs from 'fs-extra';
 import yargs from 'yargs';
 import path from 'path';
 import pkg from '../package.json';
-import utilities from './utilities';
 
 import puppeteer from 'puppeteer';
 import isUrl from 'is-url';

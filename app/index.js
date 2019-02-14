@@ -12,7 +12,7 @@ import isUrl from 'is-url';
 import {inspect} from 'util';
 
 import slug from 'url-slug';
-import http from 'http';
+import http from 'http-https';
 
 const currentDir = process.cwd();
 const OPTIONS = {};

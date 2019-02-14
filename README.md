@@ -1,6 +1,6 @@
 # FONT THIEF
 
-![kohlenklau](https://imgur.com/2zDHNFz)
+![kohlenklau](kohlenklau.png)
 
 **Extract and convert webfonts from any website!**
 

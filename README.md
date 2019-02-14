@@ -1,5 +1,7 @@
 # FONT THIEF
 
+![kohlenklau](https://imgur.com/2zDHNFz)
+
 **Extract and convert webfonts from any website!**
 
 #### Install

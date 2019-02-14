@@ -170,6 +170,7 @@ function getOptions() {
             ],
             description: 'Convert fonts to format. Currently supported: ' + FORMATS.join(', '),
             type: 'string',
+            default: 'otf'
         })
         .option('site', {
             alias: [

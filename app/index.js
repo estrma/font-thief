@@ -3,6 +3,7 @@
 import fs from 'fs-extra';
 import colors from 'colors';
 import yargs from 'yargs';
+import interactive from 'yargs-interactive';
 import path from 'path';
 import pkg from '../package.json';
 import utilities from './utilities';
@@ -11,17 +12,15 @@ import puppeteer from 'puppeteer';
 import isUrl from 'is-url';
 import {inspect} from 'util';
 
+import slug from 'url-slug';
+import http from 'http';
+
+const currentDir = process.cwd();
 const OPTIONS = {};
+let FONTDIR = null;
 
 const FORMATS = ['ttf', 'otf', 'woff', 'woff2'];
-const MIMETYPES = [
-  'application/x-font-ttf',
-  'application/x-font-truetype',
-  'application/x-font-otf',
-  'application/x-font-opentype',
-  'application/font-woff',
-  'pplication/font-woff2'
-];
+
 const foundFonts = new Set();
 
 function logResp(resp) {
@@ -34,10 +33,26 @@ function logResp(resp) {
       name
     });
   }
-
   // utilities.o('log', `logResp: ${inspect(resp)}`.green.bold);
-}
 
+}
+function downloadFonts({name, url}) {
+
+  console.log(name, url);
+
+  const file = fs.createWriteStream(`${FONTDIR}/${name}`);
+
+  const request = http.get(url, function (response) {
+    response.pipe(file);
+    file.on('finish', function () {
+      file.close(() => {
+        utilities.o('log', `Downloadaded ${name} successfully!`.green.bold);
+      });
+    });
+  });
+
+
+}
 function logFoundFonts() {
 
   const size = foundFonts.size;
@@ -52,7 +67,14 @@ function logFoundFonts() {
 
     utilities.o('log', `Found ${size} fonts:`.green.bold);
     utilities.o('log', `${rows}`.green);
-    utilities.o('log', `Download to current directory? (${process.cwd()})`.green.bold);
+    utilities.o('log', `Downloading to current directory (${currentDir})`.green.bold);
+
+    FONTDIR = path.join(currentDir, `/font-thief-${slug(OPTIONS.site)}`);
+    !fs.existsSync(FONTDIR) && fs.mkdirSync(FONTDIR);
+
+
+    foundFonts.forEach(downloadFonts);
+
   }
 
 
@@ -84,7 +106,7 @@ function getPage(url) {
 
 function startApp() {
 
-  utilities.title('Starting boilerplate');
+  utilities.title('FONT THIEF');
 
   if (OPTIONS.site) {
 

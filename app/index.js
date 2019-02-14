@@ -14,6 +14,9 @@ import {inspect} from 'util';
 import slug from 'url-slug';
 import http from 'http-https';
 
+import woff2 from 'woff2';
+
+
 const currentDir = process.cwd();
 const OPTIONS = {};
 
@@ -33,13 +36,34 @@ function logResp(resp) {
         });
     }
 }
+
+function convert(name, format) {
+    const ext = path.extname(name);
+    const file = `${FONTDIR}/${name}`;
+
+    if (ext === '.woff2' && format === 'ttf') {
+
+        const input = fs.readFileSync(file);
+        const output = file.replace(ext, `.ttf`);
+
+        fs.writeFileSync(output, woff2.decode(input));
+        fs.unlink(file);
+
+        utilities.o('log', `Converted to ${format}`.green);
+
+    }
+
+}
+
 function downloadFonts({name, url}) {
 
     const file = fs.createWriteStream(`${FONTDIR}/${name}`);
 
+
     const request = http.get(url);
 
     request.on('response', response => {
+
         response.pipe(file);
     });
 
@@ -47,7 +71,12 @@ function downloadFonts({name, url}) {
         file.close(() => {
             utilities.o('log', `✔ ${name}`.green);
         });
+
+        if (OPTIONS.convert) {
+            convert(name, OPTIONS.convert);
+        }
     });
+
 
     file.on('error', (err) => {
         utilities.o('log', `Error! ${err}`.red.bold);
@@ -134,7 +163,7 @@ function getOptions() {
             alias: [
                 'c',
             ],
-            description: 'Convert fonts to format (separate by comma)',
+            description: 'Convert fonts to format. Currently supported: ttf',
             type: 'string',
         })
         .option('site', {

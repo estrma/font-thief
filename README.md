@@ -1,8 +1,8 @@
 # FONT THIEF
+**Extract and convert webfonts from any website!**
 
 ![kohlenklau](kohlenklau.png)
 
-**Extract and convert webfonts from any website!**
 
 #### Install
 
@@ -18,4 +18,3 @@ $ loot -s {url} [optional -c {format}]
 
 Currently supported formats: otf, ttf.
 Converts to otf by default.
-

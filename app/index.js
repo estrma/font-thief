@@ -19,11 +19,12 @@ import woff2 from 'woff2';
 
 const currentDir = process.cwd();
 const OPTIONS = {};
+const FORMATS = ['ttf', 'otf'];
 
 let FONTDIR = null;
 
-
 const foundFonts = new Set();
+
 
 function logResp(resp) {
     if ('font' === resp.request().resourceType()) {
@@ -38,13 +39,16 @@ function logResp(resp) {
 }
 
 function convert(name, format) {
+    if (!FORMATS.includes(format)) {
+        return;
+    }
     const ext = path.extname(name);
     const file = `${FONTDIR}/${name}`;
 
-    if (ext === '.woff2' && format === 'ttf') {
+    if (ext === '.woff2') {
 
         const input = fs.readFileSync(file);
-        const output = file.replace(ext, `.ttf`);
+        const output = file.replace(ext, `.${format}`);
 
         fs.writeFileSync(output, woff2.decode(input));
         fs.unlink(file);
@@ -52,6 +56,7 @@ function convert(name, format) {
         utilities.o('log', `Converted to ${format}`.green);
 
     }
+
 
 }
 
@@ -163,7 +168,7 @@ function getOptions() {
             alias: [
                 'c',
             ],
-            description: 'Convert fonts to format. Currently supported: ttf',
+            description: 'Convert fonts to format. Currently supported: ' + FORMATS.join(', '),
             type: 'string',
         })
         .option('site', {

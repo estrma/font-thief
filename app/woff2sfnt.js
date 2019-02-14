@@ -165,5 +165,5 @@ function toBuffer(arrBuf) {
 }
 
 module.exports = {
-    toSfnt: woff2sfnt
+    decode: woff2sfnt
 };

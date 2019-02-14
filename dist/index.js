@@ -28,6 +28,10 @@ const woff = require('./woff2sfnt');
 const currentDir = process.cwd();
 const OPTIONS = {};
 const FORMATS = ['ttf', 'otf'];
+const decode = {
+  '.woff2': _woff.default,
+  '.woff': woff
+};
 let FONTDIR = null;
 const foundFonts = new Set();
 
@@ -56,17 +60,10 @@ function convert(name, format) {
   const input = _fsExtra.default.readFileSync(file);
 
   const output = file.replace(ext, `.${format}`);
+  const decoder = decode[ext];
 
-  if (ext === '.woff2') {
-    _fsExtra.default.writeFileSync(output, _woff.default.decode(input));
-
-    _fsExtra.default.unlink(file);
-
-    utilities.o('log', `Converted to ${format}`.green);
-  }
-
-  if (ext === '.woff') {
-    _fsExtra.default.writeFileSync(output, woff.toSfnt(input));
+  if (decoder) {
+    _fsExtra.default.writeFileSync(output, decoder.decode(input));
 
     _fsExtra.default.unlink(file);
 

@@ -20,6 +20,10 @@ import woff2 from 'woff2';
 const currentDir = process.cwd();
 const OPTIONS = {};
 const FORMATS = ['ttf', 'otf'];
+const decode = {
+    '.woff2': woff2,
+    '.woff': woff
+};
 
 let FONTDIR = null;
 
@@ -44,20 +48,15 @@ function convert(name, format) {
     }
     const ext = path.extname(name);
     const file = `${FONTDIR}/${name}`;
+
     const input = fs.readFileSync(file);
     const output = file.replace(ext, `.${format}`);
 
-    if (ext === '.woff2') {
 
-        fs.writeFileSync(output, woff2.decode(input));
-        fs.unlink(file);
-        utilities.o('log', `Converted to ${format}`.green);
+    const decoder = decode[ext];
 
-    }
-
-    if (ext === '.woff') {
-
-        fs.writeFileSync(output, woff.toSfnt(input));
+    if (decoder) {
+        fs.writeFileSync(output, decoder.decode(input));
         fs.unlink(file);
         utilities.o('log', `Converted to ${format}`.green);
 

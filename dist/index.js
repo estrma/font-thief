@@ -23,6 +23,8 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 const utilities = require('./utilities');
 
+const woff = require('./woff2sfnt');
+
 const currentDir = process.cwd();
 const OPTIONS = {};
 const FORMATS = ['ttf', 'otf'];
@@ -51,12 +53,20 @@ function convert(name, format) {
 
   const file = `${FONTDIR}/${name}`;
 
+  const input = _fsExtra.default.readFileSync(file);
+
+  const output = file.replace(ext, `.${format}`);
+
   if (ext === '.woff2') {
-    const input = _fsExtra.default.readFileSync(file);
-
-    const output = file.replace(ext, `.${format}`);
-
     _fsExtra.default.writeFileSync(output, _woff.default.decode(input));
+
+    _fsExtra.default.unlink(file);
+
+    utilities.o('log', `Converted to ${format}`.green);
+  }
+
+  if (ext === '.woff') {
+    _fsExtra.default.writeFileSync(output, woff.toSfnt(input));
 
     _fsExtra.default.unlink(file);
 

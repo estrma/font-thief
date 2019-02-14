@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 const utilities = require('./utilities');
+const woff = require('./woff2sfnt');
 
 import fs from 'fs-extra';
 import yargs from 'yargs';
@@ -43,15 +44,21 @@ function convert(name, format) {
     }
     const ext = path.extname(name);
     const file = `${FONTDIR}/${name}`;
+    const input = fs.readFileSync(file);
+    const output = file.replace(ext, `.${format}`);
 
     if (ext === '.woff2') {
 
-        const input = fs.readFileSync(file);
-        const output = file.replace(ext, `.${format}`);
-
         fs.writeFileSync(output, woff2.decode(input));
         fs.unlink(file);
+        utilities.o('log', `Converted to ${format}`.green);
 
+    }
+
+    if (ext === '.woff') {
+
+        fs.writeFileSync(output, woff.toSfnt(input));
+        fs.unlink(file);
         utilities.o('log', `Converted to ${format}`.green);
 
     }

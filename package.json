@@ -28,7 +28,7 @@
         "is-url": "^1.2.4",
         "pako": "^1.0.8",
         "path": "^0.12.7",
-        "puppeteer": "^1.12.2",
+        "puppeteer": "^1.13.0",
         "underscore": "^1.9.1",
         "url-slug": "^2.0.0",
         "woff2": "^0.2.2",
